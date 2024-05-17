@@ -1,5 +1,6 @@
 import {db} from '../db.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export const register = (req,res)=>{
     
@@ -29,7 +30,7 @@ export const register = (req,res)=>{
 }
 
 export const login = (req,res)=>{
-    const {username, password} = req.body
+    const {username, password: userPassword} = req.body
     const q = "SELECT * FROM users WHERE username=?";
 
     db.query(q,[username],(err,data)=>{
@@ -37,10 +38,16 @@ export const login = (req,res)=>{
         if(data.length == 0) return res.status(404).json('User not found!!!')
         
         // Checking password
-        const isPasswordCorrect = bcrypt.compareSync(password, data[0].password);
+        const isPasswordCorrect = bcrypt.compareSync(userPassword, data[0].password);
         if(!isPasswordCorrect) return res.status(400).json("username or password not correct");
 
-        
+        const token = jwt.sign({id: data[0].id}, 'jwtkey');
+        const {password, ...other} = data[0]
+
+        res.cookie("access_token",token,{
+            httpOnly:true,
+        }).status(200).json(other)
+
     })
 }
 
