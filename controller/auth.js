@@ -29,7 +29,19 @@ export const register = (req,res)=>{
 }
 
 export const login = (req,res)=>{
-    
+    const {username, password} = req.body
+    const q = "SELECT * FROM users WHERE username=?";
+
+    db.query(q,[username],(err,data)=>{
+        if(err) return res.json(err);
+        if(data.length == 0) return res.status(404).json('User not found!!!')
+        
+        // Checking password
+        const isPasswordCorrect = bcrypt.compareSync(password, data[0].password);
+        if(!isPasswordCorrect) return res.status(400).json("username or password not correct");
+
+        
+    })
 }
 
 export const logout = (req,res)=>{
