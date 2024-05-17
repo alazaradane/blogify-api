@@ -13,6 +13,17 @@ export const register = (req,res)=>{
         // bycrpt 
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(password, salt)
+
+        const q = "INSERT INTO users(`username`,`email`,`password`) VALUES (?)";
+        const values =[
+            username,
+            email,
+            hash
+        ]
+        db.query(q,[values],(err,data)=>{
+            if(err) return res.json(err)
+            return res.status(200).json('User created successfully')
+        })
     })
 
 }
