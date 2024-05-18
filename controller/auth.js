@@ -42,7 +42,7 @@ export const login = (req, res) => {
       if (!isPasswordCorrect) return res.status(400).json("username or password not correct");
   
       // Generate new token
-      const token = jwt.sign({ id: data[0].id }, 'jwtkey', { expiresIn: '1m' }); // Token expires in 1 hour
+      const token = jwt.sign({ id: data[0].id },'jwtkey', { expiresIn: '1hr' }); // Token expires in 1 hour
       const { password, ...other } = data[0];
   
       res.cookie("access_token", token, {
