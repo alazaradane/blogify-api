@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import dotenv  from 'dotenv'
 import multer from 'multer'
 import postRoutes from './routes/post.js'
 import userRoutes from './routes/user.js'
@@ -7,6 +8,7 @@ import authRoutes from './routes/auth.js'
 import cors from 'cors'
 
 const app = express();
+dotenv.config();
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
@@ -33,7 +35,7 @@ app.use('/api/posts', postRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/auth', authRoutes)
 
-const PORT = 8000
+const PORT = process.env.PORT
 app.listen(PORT, ()=>{
     console.log(`Listening server ${PORT}...`)
 })
